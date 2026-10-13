@@ -13,9 +13,31 @@ namespace 随机点名系统
     public partial class Form1 : Form
     {
         private List<string> _names = new List<string>();
+        bool English = true;
+        private void ApplyLanguage()
+        {
+            string  add, input, random;
+
+            if (English)
+            {
+                add = "Add manually";
+                input = "Import '.txt' document";
+                random = "Pick";
+            }
+            else
+            {
+                add = "手动添加";
+                input = "导入'.txt'文档";
+                random = "点名";
+            }
+            btnAdd.Text = add;
+            btnInput.Text = input;
+            btnRandomName.Text = random;
+        }
         public Form1()
         {
             InitializeComponent();
+            ApplyLanguage();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -30,6 +52,7 @@ namespace 随机点名系统
             */
             using (AddName addForm = new AddName())
             {
+                addForm.English = this.English;
                 if (addForm.ShowDialog() == DialogResult.OK)
                 {
                     _names = addForm.Names;
@@ -91,6 +114,18 @@ namespace 随机点名系统
                 listViewRandomName.Items.Clear();
                 listViewRandomName.Items.Add(randomName);
             }
+        }
+
+        private void btnSwitch_Click(object sender, EventArgs e)
+        {
+            English = false;
+            ApplyLanguage();
+        }
+
+        private void btnEnglish_Click(object sender, EventArgs e)
+        {
+            English = true;
+            ApplyLanguage();
         }
     }
     
