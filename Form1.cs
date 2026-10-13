@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Text;
 using System.Windows.Forms;
-using System.IO;
 
 namespace 随机点名系统
 {
@@ -72,7 +73,24 @@ namespace 随机点名系统
 
         private void btnRandomName_Click(object sender, EventArgs e)
         {
-
+            int count = _names.Count;
+            if (count <= 0)
+            {
+                MessageBox.Show("没有可点名的人员");
+                return;
+            }
+            else if (count == 1)
+            {
+                MessageBox.Show("只有一人，无需点名");
+            }
+            else
+            {
+                Random random = new Random();
+                int index = random.Next(count);
+                string randomName = _names[index];
+                listViewRandomName.Items.Clear();
+                listViewRandomName.Items.Add(randomName);
+            }
         }
     }
     

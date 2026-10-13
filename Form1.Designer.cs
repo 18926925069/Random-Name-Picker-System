@@ -34,15 +34,15 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.flpbtnAdd = new System.Windows.Forms.FlowLayoutPanel();
             this.flpbtnInput = new System.Windows.Forms.FlowLayoutPanel();
-            this.FlpTxt = new System.Windows.Forms.FlowLayoutPanel();
             this.flpbtnRandomName = new System.Windows.Forms.FlowLayoutPanel();
-            this.listViewRandomName = new System.Windows.Forms.ListView();
             this.btnRandomName = new System.Windows.Forms.Button();
+            this.FlpTxt = new System.Windows.Forms.FlowLayoutPanel();
+            this.listViewRandomName = new System.Windows.Forms.ListView();
             this.tableLayoutPanel1.SuspendLayout();
             this.flpbtnAdd.SuspendLayout();
             this.flpbtnInput.SuspendLayout();
-            this.FlpTxt.SuspendLayout();
             this.flpbtnRandomName.SuspendLayout();
+            this.FlpTxt.SuspendLayout();
             this.SuspendLayout();
             // 
             // openFileDialog
@@ -107,6 +107,25 @@
             this.flpbtnInput.Size = new System.Drawing.Size(105, 40);
             this.flpbtnInput.TabIndex = 3;
             // 
+            // flpbtnRandomName
+            // 
+            this.flpbtnRandomName.Controls.Add(this.btnRandomName);
+            this.flpbtnRandomName.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpbtnRandomName.Location = new System.Drawing.Point(112, 207);
+            this.flpbtnRandomName.Name = "flpbtnRandomName";
+            this.flpbtnRandomName.Size = new System.Drawing.Size(103, 199);
+            this.flpbtnRandomName.TabIndex = 5;
+            // 
+            // btnRandomName
+            // 
+            this.btnRandomName.Location = new System.Drawing.Point(3, 3);
+            this.btnRandomName.Name = "btnRandomName";
+            this.btnRandomName.Size = new System.Drawing.Size(100, 51);
+            this.btnRandomName.TabIndex = 0;
+            this.btnRandomName.Text = "抽取一个名字";
+            this.btnRandomName.UseVisualStyleBackColor = true;
+            this.btnRandomName.Click += new System.EventHandler(this.btnRandomName_Click);
+            // 
             // FlpTxt
             // 
             this.FlpTxt.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -118,38 +137,16 @@
             this.FlpTxt.Size = new System.Drawing.Size(323, 151);
             this.FlpTxt.TabIndex = 4;
             // 
-            // flpbtnRandomName
-            // 
-            this.flpbtnRandomName.Controls.Add(this.btnRandomName);
-            this.flpbtnRandomName.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpbtnRandomName.Location = new System.Drawing.Point(112, 207);
-            this.flpbtnRandomName.Name = "flpbtnRandomName";
-            this.flpbtnRandomName.Size = new System.Drawing.Size(103, 199);
-            this.flpbtnRandomName.TabIndex = 5;
-            // 
             // listViewRandomName
             // 
-            this.listViewRandomName.Alignment = System.Windows.Forms.ListViewAlignment.Default;
             this.listViewRandomName.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.listViewRandomName.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.listViewRandomName.HideSelection = false;
             this.listViewRandomName.Location = new System.Drawing.Point(3, 3);
             this.listViewRandomName.Name = "listViewRandomName";
             this.listViewRandomName.Size = new System.Drawing.Size(326, 154);
             this.listViewRandomName.TabIndex = 0;
             this.listViewRandomName.UseCompatibleStateImageBehavior = false;
-            this.listViewRandomName.View = System.Windows.Forms.View.Details;
             this.listViewRandomName.SelectedIndexChanged += new System.EventHandler(this.listViewRandomName_SelectedIndexChanged);
-            // 
-            // btnRandomName
-            // 
-            this.btnRandomName.Location = new System.Drawing.Point(3, 3);
-            this.btnRandomName.Name = "btnRandomName";
-            this.btnRandomName.Size = new System.Drawing.Size(100, 51);
-            this.btnRandomName.TabIndex = 0;
-            this.btnRandomName.Text = "抽取一个名字";
-            this.btnRandomName.UseVisualStyleBackColor = true;
-            this.btnRandomName.Click += new System.EventHandler(this.btnRandomName_Click);
             // 
             // Form1
             // 
@@ -163,8 +160,8 @@
             this.tableLayoutPanel1.ResumeLayout(false);
             this.flpbtnAdd.ResumeLayout(false);
             this.flpbtnInput.ResumeLayout(false);
-            this.FlpTxt.ResumeLayout(false);
             this.flpbtnRandomName.ResumeLayout(false);
+            this.FlpTxt.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
