@@ -59,6 +59,7 @@
             this.LabTips.Size = new System.Drawing.Size(221, 12);
             this.LabTips.TabIndex = 2;
             this.LabTips.Text = "在上方输入框输入名字，仅支持一次一个";
+            this.LabTips.Click += new System.EventHandler(this.LabTips_Click);
             // 
             // btnOK
             // 
