@@ -1,4 +1,4 @@
-﻿namespace 随机点名系统
+namespace 随机点名系统
 {
     partial class AddName
     {
@@ -59,7 +59,6 @@
             this.LabTips.Size = new System.Drawing.Size(221, 12);
             this.LabTips.TabIndex = 2;
             this.LabTips.Text = "在上方输入框输入名字，仅支持一次一个";
-            this.LabTips.Click += new System.EventHandler(this.LabTips_Click);
             // 
             // btnOK
             // 
@@ -81,6 +80,7 @@
             this.Controls.Add(this.btnAdd);
             this.Controls.Add(this.txtName);
             this.Name = "AddName";
+            // This is only the placeholder text shown in the designer; the actual title is set by ApplyLanguage in AddName_Load.
             this.Text = "AddName";
             this.Load += new System.EventHandler(this.AddName_Load);
             this.ResumeLayout(false);
