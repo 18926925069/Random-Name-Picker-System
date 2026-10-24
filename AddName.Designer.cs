@@ -32,6 +32,7 @@ namespace 随机点名系统
             this.btnAdd = new System.Windows.Forms.Button();
             this.LabTips = new System.Windows.Forms.Label();
             this.btnOK = new System.Windows.Forms.Button();
+            this.btnCancel = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // txtName
@@ -70,12 +71,28 @@ namespace 随机点名系统
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
             // 
+            // btnCancel
+            // 
+            // CancelButton = btnCancel means Esc cancels through the form's DialogResult and closes this dialog;
+            // no Click handler is needed, and the names typed so far are discarded by the main form.
+            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnCancel.Location = new System.Drawing.Point(197, 110);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size(75, 23);
+            this.btnCancel.TabIndex = 4;
+            this.btnCancel.Text = "取消";
+            this.btnCancel.UseVisualStyleBackColor = true;
+            // 
             // AddName
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            // Enter runs the dialog's default button and Esc its cancel button, so names can be added without the mouse.
+            this.AcceptButton = this.btnAdd;
+            this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(356, 145);
             this.Controls.Add(this.btnOK);
+            this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.LabTips);
             this.Controls.Add(this.btnAdd);
             this.Controls.Add(this.txtName);
@@ -94,5 +111,6 @@ namespace 随机点名系统
         private System.Windows.Forms.Button btnAdd;
         private System.Windows.Forms.Label LabTips;
         private System.Windows.Forms.Button btnOK;
+        private System.Windows.Forms.Button btnCancel;
     }
 }

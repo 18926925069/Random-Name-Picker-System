@@ -48,14 +48,15 @@ namespace 随机点名系统
         private void btnAdd_Click(object sender, EventArgs e)
         {
             // When the using block ends, addForm.Dispose() is called automatically to release the form's resources, even if an exception is thrown.
-            using (AddName addForm = new AddName())
+            using (AddName addForm = new AddName(English))
             {
-                addForm.English = this.English;
+                // The current names are passed in so the dialog can refuse names that are already in the list.
+                addForm.SetExistingNames(_names);
                 if (addForm.ShowDialog() == DialogResult.OK)
                 {
-                    // Copy with Clear + AddRange instead of assigning _names = addForm.Names to take over the reference:
-                    // if we took the reference directly, the next entry in the child form would modify the same List and the two forms would share state.
-                    _names.Clear();
+                    // "Add manually" only appends: the names entered in the dialog are added to the end of the current
+                    // list, and closing the dialog with Cancel (or the X button) never touches the list. Importing a file
+                    // is the action that replaces the whole list.
                     _names.AddRange(addForm.Names);
                 }
             }
@@ -68,135 +69,96 @@ namespace 随机点名系统
                 return;
             }
 
+            string[] lines;
+            List<string> importedNames = new List<string>();
             try
             {
-                // Every import replaces the previous list; otherwise the list keeps growing and duplicated people are more likely to be picked.
-                _names.Clear();
-                foreach (string line in ReadLines(openFileDialog.FileName))
+                lines = ReadLines(openFileDialog.FileName);
+
+                foreach (string line in lines)
                 {
                     string name = line.Trim();
                     if (name.Length > 0)
                     {
-                        _names.Add(name);
+                        importedNames.Add(name);
                     }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(English ? "Import failed: " + ex.Message : "导入失败：" + ex.Message);
+                // Nothing has been changed yet: the current list is only replaced from here on, after the file has been
+                // read completely. A failed import therefore keeps the names the user already had.
+                MessageBox.Show(DescribeImportError(ex), English ? "Import failed" : "导入失败",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            MessageBox.Show(English
+            if (importedNames.Count == 0)
+            {
+                MessageBox.Show(English
+                    ? "No names were found in this file. The name list was not changed."
+                    : "该文件中没有找到任何姓名，名单未作修改。",
+                    English ? "Nothing imported" : "没有可导入的内容",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            // Every successful import replaces the previous list; otherwise the list keeps growing and duplicated people are more likely to be picked.
+            _names.Clear();
+            _names.AddRange(importedNames);
+
+            string message = English
                 ? "Imported " + _names.Count + " name(s)."
-                : "导入成功，共 " + _names.Count + " 人。");
+                : "导入成功，共 " + _names.Count + " 人。";
+            if (LineSplitter.LastFallbackMayBeWrong)
+            {
+                message += English
+                    ? "\n\nWarning: the file's encoding could not be detected with certainty, so the names may look garbled. Save the file as UTF-8 and import it again if so."
+                    : "\n\n警告：无法确定文件编码，姓名可能出现乱码。如发现乱码，请将文件另存为 UTF-8 后再导入。";
+            }
+
+            MessageBox.Show(message, English ? "Import" : "导入", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         /// <summary>
-        /// Reads all lines of a text file and detects UTF-8, Unicode (with BOM) and GBK encodings automatically.
-        /// The File.ReadAllBytes + Split approach is used because File.ReadAllLines does not exist in .NET 2.0.
+        /// Turns an exception thrown while reading the name file into a message the user can act on. The raw exception
+        /// text of the framework is only used as a last resort, because messages such as "The process cannot access the
+        /// file because it is being used by another process" mention technical details that do not help classroom use.
+        /// </summary>
+        private string DescribeImportError(Exception ex)
+        {
+            if (ex is FileNotFoundException)
+            {
+                return English ? "The file was not found. It may have been moved or deleted." : "找不到文件，它可能已被移动或删除。";
+            }
+
+            if (ex is DirectoryNotFoundException)
+            {
+                return English ? "The folder was not found. It may have been moved or deleted." : "找不到文件所在的文件夹，它可能已被移动或删除。";
+            }
+
+            if (ex is UnauthorizedAccessException)
+            {
+                return English ? "Access to the file was denied. Choose a file you are allowed to read." : "没有读取该文件的权限，请选择一个你有权限读取的文件。";
+            }
+
+            if (ex is IOException)
+            {
+                return English
+                    ? "The file could not be read. It may be open in another program; close it and try again."
+                    : "无法读取文件。该文件可能正被其他程序打开，请关闭后重试。";
+            }
+
+            return (English ? "Import failed: " : "导入失败：") + ex.Message;
+        }
+
+        /// <summary>
+        /// Reads all lines of a text file and detects UTF-8, Unicode (with BOM) and GBK encodings. The decoding logic lives
+        /// in LineSplitter so it can be reviewed and tested on its own.
         /// </summary>
         private static string[] ReadLines(string path)
         {
-            byte[] bytes = File.ReadAllBytes(path);
-
-            // Check whether the file starts with a BOM (byte order mark, a few special bytes that identify the encoding).
-            // The order matters: the first two bytes of a UTF-32LE BOM are the same as UTF-16LE, so UTF-32 must be checked first.
-            Encoding encoding;
-            int skip = 0; // How many bytes the BOM itself occupies; it must be skipped when decoding, or the first name will have an invisible character in front of it.
-            if (bytes.Length >= 4 && bytes[0] == 0xFF && bytes[1] == 0xFE && bytes[2] == 0x00 && bytes[3] == 0x00)
-            {
-                encoding = new UTF32Encoding(false, true);
-                skip = 4;
-            }
-            else if (bytes.Length >= 4 && bytes[0] == 0x00 && bytes[1] == 0x00 && bytes[2] == 0xFE && bytes[3] == 0xFF)
-            {
-                encoding = new UTF32Encoding(true, true);
-                skip = 4;
-            }
-            else if (bytes.Length >= 3 && bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF)
-            {
-                encoding = Encoding.UTF8;
-                skip = 3;
-            }
-            else if (bytes.Length >= 2 && bytes[0] == 0xFF && bytes[1] == 0xFE)
-            {
-                // UTF-32 has already been ruled out above, so the remaining FF FE can only be UTF-16LE.
-                encoding = Encoding.Unicode;
-                skip = 2;
-            }
-            else if (bytes.Length >= 2 && bytes[0] == 0xFE && bytes[1] == 0xFF)
-            {
-                encoding = Encoding.BigEndianUnicode;
-                skip = 2;
-            }
-            else if (IsValidUtf8(bytes))
-            {
-                // Without a BOM the encoding cannot be determined with certainty, so try UTF-8 first:
-                // as soon as an invalid byte sequence appears, give up and use the system default encoding (GBK on Chinese systems).
-                encoding = Encoding.UTF8;
-            }
-            else
-            {
-                // Encoding.Default must not be used to decode every file: a UTF-8 file saved by Notepad
-                // would be decoded as GBK on Chinese systems and become garbled, so the UTF-8 branch above must come first.
-                encoding = Encoding.Default;
-            }
-
-            string text = encoding.GetString(bytes, skip, bytes.Length - skip);
-            // Split on both \r and \n so Windows (\r\n), Linux (\n) and old Mac (\r) line endings are all handled correctly.
-            return text.Split(new char[] { '\r', '\n' });
-        }
-
-        /// <summary>
-        /// Checks whether a byte sequence is valid UTF-8. Every UTF-8 character is encoded in 1 to 4 bytes;
-        /// the high bits of the first byte determine how many bytes follow (see the 0xF0 / 0xE0 / 0xC0 checks below),
-        /// and every following byte must start with 10 (i.e. fall in the range 0x80~0xBF).
-        /// </summary>
-        private static bool IsValidUtf8(byte[] bytes)
-        {
-            int i = 0;
-            while (i < bytes.Length)
-            {
-                int length; // How many bytes the current character occupies in total
-                if (bytes[i] < 0x80)
-                {
-                    length = 1;
-                }
-                else if ((bytes[i] & 0xF0) == 0xF0)
-                {
-                    length = 4;
-                }
-                else if ((bytes[i] & 0xE0) == 0xE0)
-                {
-                    length = 3;
-                }
-                else if ((bytes[i] & 0xC0) == 0xC0)
-                {
-                    length = 2;
-                }
-                else
-                {
-                    return false; // A "continuation byte" such as 10xxxxxx appeared at the start, so this is not UTF-8
-                }
-
-                if (i + length > bytes.Length)
-                {
-                    return false; // The file ends in the middle of a character, i.e. it was truncated
-                }
-
-                for (int j = 1; j < length; j++)
-                {
-                    if ((bytes[i + j] & 0xC0) != 0x80)
-                    {
-                        return false;
-                    }
-                }
-
-                i += length;
-            }
-
-            return true;
+            return LineSplitter.ReadLines(path);
         }
 
         private void btnRandomName_Click(object sender, EventArgs e)

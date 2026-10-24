@@ -7,23 +7,38 @@ namespace 随机点名系统
     public partial class AddName : Form
     {
         /// <summary>
-        /// Whether the UI uses English. Set by the main form before ShowDialog; the text is refreshed from it when the form loads.
+        /// Whether the UI uses English. The text is refreshed from it when the form loads.
         /// </summary>
-        public bool English = true;
+        private bool English;
 
         private readonly List<string> _names = new List<string>();
 
         /// <summary>
-        /// The names entered this time. The main form only reads this after "OK" has been clicked.
+        /// The names that were already in the main list when this dialog was opened. They are not added again; names typed
+        /// into this dialog are checked against them so the same person cannot end up in the list twice by accident.
+        /// </summary>
+        private readonly List<string> _existingNames = new List<string>();
+
+        /// <summary>
+        /// The names to append to the main list. The main form reads this only when ShowDialog returned OK.
         /// </summary>
         public List<string> Names
         {
             get { return _names; }
         }
 
-        public AddName()
+        public AddName(bool english)
         {
             InitializeComponent();
+            English = english;
+        }
+
+        /// <summary>
+        /// Seeds the dialog with the names from the main form, so names typed here are checked against the current list.
+        /// </summary>
+        public void SetExistingNames(IEnumerable<string> names)
+        {
+            _existingNames.AddRange(names);
         }
 
         private void ApplyLanguage()
@@ -31,14 +46,14 @@ namespace 随机点名系统
             if (English)
             {
                 Text = "Add Names";
-                LabTips.Text = "Type names separated by commas or spaces, then click Add.";
+                LabTips.Text = "Type one or more names separated by commas, spaces or line breaks, then click Add. They are appended to the current list.";
                 btnAdd.Text = "Add";
                 btnOK.Text = "OK";
             }
             else
             {
                 Text = "添加人员";
-                LabTips.Text = "输入姓名，多个姓名用中文逗号或空格隔开，再点击添加。";
+                LabTips.Text = "输入一个或多个姓名，用逗号、空格或换行分隔，再点击添加。新姓名将追加到现有名单之后。";
                 btnAdd.Text = "添加";
                 btnOK.Text = "完成";
             }
@@ -52,11 +67,13 @@ namespace 随机点名系统
         private void btnAdd_Click(object sender, EventArgs e)
         {
             // Compare against the existing names and keep only the new ones.
-            List<string> names = SplitNames(txtName.Text, _names);
+            List<string> names = SplitNames(txtName.Text, _names, _existingNames);
             if (names.Count == 0)
             {
-                // The input box is empty or contains only duplicates. Show a hint, but do not interrupt the data entry.
-                MessageBox.Show(English ? "Nothing to add." : "没有可添加的姓名（可能为空或重复）。");
+                // The input box is empty or contains only names that are already in the list. Show a hint, but do not interrupt the data entry.
+                MessageBox.Show(English
+                    ? "Nothing to add. The names are empty or already in the list."
+                    : "没有可添加的姓名：输入为空，或姓名已在现有名单中。");
                 txtName.Focus();
                 return;
             }
@@ -68,18 +85,17 @@ namespace 随机点名系统
 
         /// <summary>
         /// Splits a piece of text into a list of names by commas (both ASCII and full-width), spaces, tabs and line breaks.
-        /// RemoveEmptyEntries drops empty items; names already in the existing list are not added again.
+        /// Empty entries are dropped; a name repeated inside the same input or already in the list is not added again.
         /// </summary>
-        private static List<string> SplitNames(string text, List<string> existing)
+        private static List<string> SplitNames(string text, List<string> existing, List<string> seeded)
         {
-            // Besides the half-width symbols, the full-width comma and full-width space commonly produced by input methods are also treated as separators.
             List<string> result = new List<string>();
-            string[] parts = text.Split(new char[] { ' ', ',', '，', '\u3000', '\r', '\n', '\t' }, StringSplitOptions.RemoveEmptyEntries);
-            foreach (string part in parts)
+            string[] parts = LineSplitter.SplitNames(text);
+            foreach (string name in parts)
             {
-                string name = part.Trim();
                 // A name repeated within the same input is added only once, otherwise a single paste would enter the same person twice.
-                if (name.Length > 0 && !existing.Contains(name) && !result.Contains(name))
+                // "existing" holds the names already added in this dialog and "seeded" the names that were in the main list.
+                if (!existing.Contains(name) && !seeded.Contains(name))
                 {
                     result.Add(name);
                 }
@@ -91,7 +107,7 @@ namespace 随机点名系统
         private void btnOK_Click(object sender, EventArgs e)
         {
             // Let users type a name and click "OK" directly, without forcing them to click "Add" first.
-            _names.AddRange(SplitNames(txtName.Text, _names));
+            _names.AddRange(SplitNames(txtName.Text, _names, _existingNames));
             if (_names.Count == 0)
             {
                 MessageBox.Show(English
