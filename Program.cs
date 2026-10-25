@@ -20,7 +20,7 @@ namespace 随机点名系统
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            Application.Run(new Index());
         }
 
         private static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)

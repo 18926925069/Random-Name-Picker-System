@@ -35,8 +35,10 @@
     <!-- The code only uses the System, System.Drawing and System.Windows.Forms assemblies;
          System.Data / System.Deployment / System.Xml are never used, so removing them reduces unrelated dependencies. -->
     <Reference Include="System" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AddName.cs">
@@ -45,11 +47,17 @@
     <Compile Include="AddName.Designer.cs">
       <DependentUpon>AddName.cs</DependentUpon>
     </Compile>
-    <Compile Include="Form1.cs">
+    <Compile Include="Index.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Index.Designer.cs">
+      <DependentUpon>Index.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Set.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Set.Designer.cs">
+      <DependentUpon>Set.cs</DependentUpon>
     </Compile>
     <Compile Include="LineSplitter.cs" />
     <Compile Include="Program.cs" />
@@ -57,9 +65,58 @@
     <EmbeddedResource Include="AddName.resx">
       <DependentUpon>AddName.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="Index.resx">
+      <DependentUpon>Index.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="obj\Debug\随机点名系统.AddName.resources" />
+    <EmbeddedResource Include="obj\Debug\随机点名系统.Index.resources" />
+    <EmbeddedResource Include="obj\Debug\随机点名系统.Set.resources" />
+    <EmbeddedResource Include="Set.resx">
+      <DependentUpon>Set.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include=".gitattributes" />
+    <Content Include=".gitignore" />
+    <Content Include="bin\Debug\Name-EN.txt" />
+    <Content Include="bin\Debug\Name-ZH.txt" />
+    <Content Include="bin\Debug\随机点名系统.exe" />
+    <Content Include="bin\Debug\随机点名系统.pdb" />
+    <Content Include="converter.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Help-EN.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Help-ZH.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Name-EN.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Name-ZH.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="obj\Debug\随机点名系统.csproj.FileListAbsolute.txt" />
+    <Content Include="obj\Debug\随机点名系统.exe" />
+    <Content Include="obj\Debug\随机点名系统.pdb" />
+    <Content Include="README.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".vscode\settings.json" />
+    <None Include="bin\Debug\Random-Name-Picker-System v0.3.zip" />
+    <None Include="LICENSE" />
+    <None Include="obj\Debug\DesignTimeResolveAssemblyReferences.cache" />
+    <None Include="obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
+    <None Include="obj\Debug\随机点名系统.csproj.AssemblyReference.cache" />
+    <None Include="obj\Debug\随机点名系统.csproj.CoreCompileInputs.cache" />
+    <None Include="obj\Debug\随机点名系统.csproj.GenerateResource.cache" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="bin\Release\" />
+    <Folder Include="obj\Debug\TempPE\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

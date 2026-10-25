@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>名单提取工具 (XLSX 转 TXT)</title>
+    <style>
+        body { font-family: "Microsoft YaHei", sans-serif; max-width: 600px; margin: 40px auto; padding: 0 20px; color: #333; line-height: 1.6; }
+        h1 { font-size: 22px; border-bottom: 2px solid #0078d4; padding-bottom: 8px; color: #0078d4; }
+        .card { background: #f8f9fa; border: 2px dashed #ccc; border-radius: 8px; padding: 40px; text-align: center; margin-top: 20px; transition: 0.3s; }
+        .card:hover { border-color: #0078d4; background: #eef6fd; }
+        .file-input { display: none; }
+        .btn { background: #0078d4; color: white; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 16px; border: none; margin: 5px; }
+        .btn:hover { background: #005a9e; }
+        .btn-download { background: #28a745; display: none; margin-top: 20px; padding: 12px 30px; font-size: 18px; animation: pulse 1.5s infinite; }
+        .btn-download:hover { background: #218838; }
+        .tip { background: #eef6fd; border-left: 4px solid #0078d4; padding: 12px 16px; margin-bottom: 20px; font-size: 14px; }
+        #status { margin-top: 20px; font-weight: bold; color: #0078d4; word-break: break-all; }
+        
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(40, 167, 69, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); }
+        }
+    </style>
+</head>
+<body>
+    <h1>📋 Excel (XLSX) ➔ TXT 名单提取器</h1>
+    
+    <div class="tip">
+        <strong>使用说明：</strong><br>
+        1. 选择您的 Excel 文件（仅支持新版 <code>.xlsx</code>）。<br>
+        2. 网页会自动提取<strong>第一个工作表的第一列</strong>内容。<br>
+        3. 解析完成后，点击绿色的<strong>“保存为 TXT 文件”</strong>按钮即可下载。
+    </div>
+
+    <div class="card">
+        <p>第一步：选择 Excel 文件</p>
+        <input type="file" id="excelFile" class="file-input" accept=".xlsx" onchange="handleFileSelect(event)">
+        <button class="btn" onclick="document.getElementById('excelFile').click()">选择 XLSX 文件</button>
+        
+        <div id="status"></div>
+        
+       
+        <button id="downloadBtn" class="btn btn-download" onclick="triggerDownload()">⬇️ 保存为 TXT 文件</button>
+    </div>
+
+    <script>
+        
+        var currentTxtBlob = null;
+        var currentFileName = "名单转换.txt";
+
+        async function handleFileSelect(evt) {
+            var file = evt.target.files[0];
+            if (!file) return;
+
+            var statusDiv = document.getElementById("status");
+            var downloadBtn = document.getElementById("downloadBtn");
+            
+            
+            downloadBtn.style.display = "none";
+            currentTxtBlob = null;
+            statusDiv.innerHTML = "正在解压并解析，请稍候...";
+
+            try {
+                var buffer = await file.arrayBuffer();
+                var view = new DataView(buffer);
+                
+                var eocdOffset = -1;
+                for (var i = buffer.byteLength - 22; i >= 0; i--) {
+                    if (view.getUint32(i, true) === 0x06054b50) {
+                        eocdOffset = i;
+                        break;
+                    }
+                }
+                if (eocdOffset === -1) throw new Error("这不是有效的 XLSX 文件（可能是被重命名的 .xls 或纯文本文件）");
+
+                var cdOffset = view.getUint32(eocdOffset + 16, true);
+                var cdSize = view.getUint32(eocdOffset + 12, true);
+                var ptr = cdOffset;
+
+                var sheetDataXml = null;
+                var sharedStringsXml = null;
+
+                while (ptr < cdOffset + cdSize) {
+                    if (view.getUint32(ptr, true) !== 0x02014b50) break;
+                    var compSize = view.getUint32(ptr + 20, true);
+                    var nameLen = view.getUint16(ptr + 28, true);
+                    var extraLen = view.getUint16(ptr + 30, true);
+                    var commentLen = view.getUint16(ptr + 32, true);
+                    var localHeaderOffset = view.getUint32(ptr + 42, true);
+                    
+                    var fileName = new TextDecoder().decode(new Uint8Array(buffer, ptr + 46, nameLen));
+                    
+                    if (fileName === "xl/worksheets/sheet1.xml" || fileName === "xl/sharedStrings.xml") {
+                        var localPtr = localHeaderOffset;
+                        var localNameLen = view.getUint16(localPtr + 26, true);
+                        var localExtraLen = view.getUint16(localPtr + 28, true);
+                        var dataStart = localPtr + 30 + localNameLen + localExtraLen;
+                        var compressedData = new Uint8Array(buffer, dataStart, compSize);
+                        
+                        var stream = new Blob([compressedData]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+                        var xmlContent = await new Response(stream).text();
+                        
+                        if (fileName === "xl/worksheets/sheet1.xml") sheetDataXml = xmlContent;
+                        if (fileName === "xl/sharedStrings.xml") sharedStringsXml = xmlContent;
+                    }
+                    ptr += 46 + nameLen + extraLen + commentLen;
+                }
+
+                if (!sheetDataXml) throw new Error("未找到工作表数据，可能文件为空或损坏。");
+
+                var stringPool = [];
+                if (sharedStringsXml) {
+                    var strRegex = /<t[^>]*>(.*?)<\/t>/g;
+                    var strMatch;
+                    while ((strMatch = strRegex.exec(sharedStringsXml)) !== null) {
+                        stringPool.push(strMatch[1].replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').trim());
+                    }
+                }
+
+                var names = [];
+                var rowRegex = /<row[^>]*>(.*?)<\/row>/g;
+                var rowMatch;
+                
+                while ((rowMatch = rowRegex.exec(sheetDataXml)) !== null) {
+                    var rowXml = rowMatch[1];
+                    var cellRegex = /<c r="A[0-9]+"[^>]*>(.*?)<\/c>/;
+                    var cellMatch = cellRegex.exec(rowXml);
+                    
+                    if (cellMatch) {
+                        var cellXml = cellMatch[1];
+                        var valRegex = /<v>(.*?)<\/v>/;
+                        var valMatch = valRegex.exec(cellXml);
+                        if (valMatch) {
+                            var val = valMatch[1];
+                            if (cellMatch[0].indexOf('t="s"') !== -1) {
+                                var idx = parseInt(val, 10);
+                                if (stringPool[idx]) names.push(stringPool[idx]);
+                            } else {
+                                names.push(val);
+                            }
+                        }
+                    }
+                }
+
+                names = names.filter(n => n && n !== "姓名" && n !== "名字" && n.toLowerCase() !== "name");
+
+                if (names.length === 0) {
+                    statusDiv.innerHTML = "⚠️ 提取成功，但没有找到文本名字。请确保第一列包含非数字的名字。";
+                    evt.target.value = ""; 
+                    return;
+                }
+
+                
+                var txtContent = "\ufeff" + names.join("\r\n");
+                currentTxtBlob = new Blob([txtContent], { type: "text/plain;charset=utf-8" });
+                currentFileName = file.name.replace(/\.[^/.]+$/, "") + "_转换.txt";
+                
+                
+                statusDiv.innerHTML = "✅ 成功提取 " + names.length + " 个名字！<br>请点击下方按钮保存。";
+                statusDiv.style.color = "#28a745";
+                downloadBtn.style.display = "inline-block";
+
+            } catch (error) {
+                console.error(error);
+                statusDiv.innerHTML = "❌ 解析失败：" + error.message;
+                statusDiv.style.color = "#dc3545";
+            } finally {
+                evt.target.value = "";
+            }
+        }
+
+        
+        function triggerDownload() {
+            if (!currentTxtBlob) return;
+            
+            var link = document.createElement("a");
+            link.href = URL.createObjectURL(currentTxtBlob);
+            link.download = currentFileName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+          
+            document.getElementById("status").innerHTML = "✅ 下载已开始，如果没反应，请检查浏览器上方是否拦截了下载。";
+            document.getElementById("downloadBtn").style.display = "none";
+        }
+    </script>
+</body>
+</html>

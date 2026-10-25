@@ -1,6 +1,6 @@
 namespace 随机点名系统
 {
-    partial class Form1
+    partial class Index
     {
         /// <summary>
         /// Required designer variable.
@@ -39,14 +39,17 @@ namespace 随机点名系统
             this.FlpTxt = new System.Windows.Forms.FlowLayoutPanel();
             this.listViewRandomName = new System.Windows.Forms.ListView();
             this.flpbtnSwitch = new System.Windows.Forms.FlowLayoutPanel();
-            this.btnSwitch = new System.Windows.Forms.Button();
+            this.btnChinese = new System.Windows.Forms.Button();
             this.btnEnglish = new System.Windows.Forms.Button();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.btnHelp = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.flpbtnAdd.SuspendLayout();
             this.flpbtnInput.SuspendLayout();
             this.flpbtnRandomName.SuspendLayout();
             this.FlpTxt.SuspendLayout();
             this.flpbtnSwitch.SuspendLayout();
+            this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // openFileDialog
@@ -86,6 +89,7 @@ namespace 随机点名系统
             this.tableLayoutPanel1.Controls.Add(this.flpbtnRandomName, 1, 2);
             this.tableLayoutPanel1.Controls.Add(this.FlpTxt, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.flpbtnSwitch, 0, 2);
+            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 2, 2);
             this.tableLayoutPanel1.Location = new System.Drawing.Point(-1, 2);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 3;
@@ -145,8 +149,6 @@ namespace 随机点名系统
             // listViewRandomName
             // 
             this.listViewRandomName.Anchor = System.Windows.Forms.AnchorStyles.None;
-            // ColumnHeaderStyle takes the default value None so names are listed line by line;
-            // the designer sometimes saves it as the invalid text "None, None, 0, 0", so it is written with the enum value to avoid failing to read it back.
             this.listViewRandomName.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
             this.listViewRandomName.HideSelection = false;
             this.listViewRandomName.Location = new System.Drawing.Point(3, 3);
@@ -157,7 +159,7 @@ namespace 随机点名系统
             // 
             // flpbtnSwitch
             // 
-            this.flpbtnSwitch.Controls.Add(this.btnSwitch);
+            this.flpbtnSwitch.Controls.Add(this.btnChinese);
             this.flpbtnSwitch.Controls.Add(this.btnEnglish);
             this.flpbtnSwitch.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpbtnSwitch.Location = new System.Drawing.Point(3, 207);
@@ -165,15 +167,15 @@ namespace 随机点名系统
             this.flpbtnSwitch.Size = new System.Drawing.Size(103, 199);
             this.flpbtnSwitch.TabIndex = 6;
             // 
-            // btnSwitch
+            // btnChinese
             // 
-            this.btnSwitch.Location = new System.Drawing.Point(3, 3);
-            this.btnSwitch.Name = "btnSwitch";
-            this.btnSwitch.Size = new System.Drawing.Size(100, 35);
-            this.btnSwitch.TabIndex = 0;
-            this.btnSwitch.Text = "中文";
-            this.btnSwitch.UseVisualStyleBackColor = true;
-            this.btnSwitch.Click += new System.EventHandler(this.btnSwitch_Click);
+            this.btnChinese.Location = new System.Drawing.Point(3, 3);
+            this.btnChinese.Name = "btnChinese";
+            this.btnChinese.Size = new System.Drawing.Size(100, 35);
+            this.btnChinese.TabIndex = 0;
+            this.btnChinese.Text = "中文";
+            this.btnChinese.UseVisualStyleBackColor = true;
+            this.btnChinese.Click += new System.EventHandler(this.btnSwitch_Click);
             // 
             // btnEnglish
             // 
@@ -185,13 +187,32 @@ namespace 随机点名系统
             this.btnEnglish.UseVisualStyleBackColor = true;
             this.btnEnglish.Click += new System.EventHandler(this.btnEnglish_Click);
             // 
-            // Form1
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.Controls.Add(this.btnHelp);
+            this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(221, 207);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(105, 199);
+            this.flowLayoutPanel1.TabIndex = 7;
+            // 
+            // btnHelp
+            // 
+            this.btnHelp.Location = new System.Drawing.Point(3, 3);
+            this.btnHelp.Name = "btnHelp";
+            this.btnHelp.Size = new System.Drawing.Size(93, 35);
+            this.btnHelp.TabIndex = 0;
+            this.btnHelp.Text = "帮助";
+            this.btnHelp.UseVisualStyleBackColor = true;
+            this.btnHelp.Click += new System.EventHandler(this.btnHelp_Click);
+            // 
+            // Index
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(328, 410);
             this.Controls.Add(this.tableLayoutPanel1);
-            this.Name = "Form1";
+            this.Name = "Index";
             this.Text = "随机点名系统";
             this.tableLayoutPanel1.ResumeLayout(false);
             this.flpbtnAdd.ResumeLayout(false);
@@ -199,6 +220,7 @@ namespace 随机点名系统
             this.flpbtnRandomName.ResumeLayout(false);
             this.FlpTxt.ResumeLayout(false);
             this.flpbtnSwitch.ResumeLayout(false);
+            this.flowLayoutPanel1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -216,8 +238,10 @@ namespace 随机点名系统
         private System.Windows.Forms.ListView listViewRandomName;
         private System.Windows.Forms.Button btnRandomName;
         private System.Windows.Forms.FlowLayoutPanel flpbtnSwitch;
-        private System.Windows.Forms.Button btnSwitch;
+        private System.Windows.Forms.Button btnChinese;
         private System.Windows.Forms.Button btnEnglish;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.Button btnHelp;
     }
 }
 

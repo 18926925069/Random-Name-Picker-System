@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Text;
@@ -7,7 +8,7 @@ using System.Windows.Forms;
 
 namespace 随机点名系统
 {
-    public partial class Form1 : Form
+    public partial class Index : Form
     {
         /// <summary>
         /// The name list. Duplicate names are allowed: a name that appears twice has twice the chance of being picked.
@@ -21,7 +22,7 @@ namespace 随机点名系统
         /// </summary>
         private readonly Random _random = new Random();
 
-        public Form1()
+        public Index()
         {
             InitializeComponent();
             ApplyLanguage();
@@ -64,6 +65,24 @@ namespace 随机点名系统
 
         private void btnInput_Click(object sender, EventArgs e)
         {
+            string appDir = AppDomain.CurrentDomain.BaseDirectory;
+            string lang = English ? "EN" : "ZH";
+            string defaultFile = Path.Combine(appDir, $"Name-{lang}.txt");
+            string HelpFile = Path.Combine(appDir, $"Help-{lang}.html");
+
+            if (!File.Exists(defaultFile))
+                defaultFile = Path.Combine(appDir, "Name-ZH.txt");
+
+            if (File.Exists(defaultFile))
+            {
+                openFileDialog.InitialDirectory = Path.GetDirectoryName(defaultFile);
+                openFileDialog.FileName = Path.GetFileName(defaultFile);
+            }
+            else
+            {
+                openFileDialog.InitialDirectory = appDir;
+            }
+
             if (openFileDialog.ShowDialog() != DialogResult.OK)
             {
                 return;
@@ -103,8 +122,7 @@ namespace 随机点名系统
                 return;
             }
 
-            // Every successful import replaces the previous list; otherwise the list keeps growing and duplicated people are more likely to be picked.
-            _names.Clear();
+            //We append to the list.
             _names.AddRange(importedNames);
 
             string message = English
@@ -188,6 +206,23 @@ namespace 随机点名系统
         {
             English = true;
             ApplyLanguage();
+        }
+
+        private void btnHelp_Click(object sender, EventArgs e)
+        {
+            string appDir = AppDomain.CurrentDomain.BaseDirectory;
+
+            string lang = English ? "EN" : "ZH";
+            string helpFile = Path.Combine(appDir, "help-" + lang + ".html");
+
+            if (File.Exists(helpFile))
+            {
+                Process.Start(helpFile);
+            }
+            else
+            {
+                MessageBox.Show("找不到帮助文件：" + helpFile, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

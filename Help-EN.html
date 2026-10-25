@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <title>Help - English (US)</title>
+    <style>
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            max-width: 760px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.8;
+            color: #333;
+        }
+        h1 { font-size: 24px; border-bottom: 2px solid #0078d4; padding-bottom: 8px; margin-bottom: 20px; }
+        h2 { font-size: 18px; margin-top: 32px; color: #0078d4; border-left: 4px solid #0078d4; padding-left: 10px; }
+        p, li { font-size: 15px; }
+        a { color: #0078d4; text-decoration: none; font-weight: bold; }
+        a:hover { text-decoration: underline; }
+        
+        /* Quote block style matching the Markdown > */
+        blockquote {
+            margin: 10px 0 20px 0;
+            padding: 12px 16px;
+            background: #f8f9fa;
+            border-left: 4px solid #0078d4;
+            border-radius: 0 4px 4px 0;
+            color: #444;
+        }
+        
+        /* Q text style */
+        .q-text {
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 24px;
+            color: #222;
+        }
+        
+        /* Inline code block style */
+        code {
+            background: #f2f2f2;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, "Courier New", monospace;
+            font-size: 14px;
+            color: #d14;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Help - English (US)</h1>
+
+    <h2>Frequently Asked Questions (FAQ)</h2>
+
+    <!-- Q1 -->
+    <div class="q-text">Q: What is this project used for?</div>
+    <blockquote>
+        <strong>A:</strong> It is used for random roll call. For more details, please refer to the <a href="./README.md">Project Readme.md</a>.
+    </blockquote>
+
+    <!-- Q2 -->
+    <div class="q-text">Q: I have a ".xlsx" file. How can I convert it into a "txt" file supported by the software?</div>
+    <blockquote>
+        <strong>A:</strong> You can use the <a href="./converter.html">xlsx-to-txt tool</a> provided in the project for conversion. However, we currently <strong>do not support</strong> <em>".xls" (97-03 Worksheet)</em> <strong>files</strong>.
+    </blockquote>
+
+    <!-- Q3 -->
+    <div class="q-text">Q: Why are we using ".NET Framework 2.0"?</div>
+    <blockquote>
+        <strong>A:</strong> For <em>ultimate compatibility</em>. In China, companies or schools may refuse to replace their high-performance computers citing "insufficient funds" (even in special economic zones like Zhuhai, there are still quite a few old Win7 machines). This causes many teaching/office computers in most cities to still run on Windows 7 or even Windows Vista. .NET Framework 2.0 (.NET 2.0) can run on most computers running Windows XP and above (unless your system is a third-party slimmed-down version).
+    </blockquote>
+
+    <!-- Q4 -->
+    <div class="q-text">Q: Why can't my name list be imported?</div>
+    <blockquote>
+        <strong>A:</strong> Because our program only supports <strong>UTF-8 encoded</strong> characters. You can try converting characters encoded in <strong>Big5</strong> or <strong>GBK (ANSI)</strong> into <strong>UTF-8 encoding</strong>.
+    </blockquote>
+
+    <!-- Q5 -->
+    <div class="q-text">Q: Are there any formatting requirements for the imported txt file?</div>
+    <blockquote>
+        <strong>A:</strong> Yes, but it is very simple: there should be exactly one name per line.
+    </blockquote>
+
+    <!-- Q6 -->
+    <div class="q-text">Q: I am worried about my name list data being uploaded or leaked. Will this program leak it?</div>
+    <blockquote>
+        <strong>A:</strong> Our application runs entirely <strong>locally</strong> and never uses any <strong>cloud services</strong>. As long as your computer is not compromised by malicious attacks, your name list privacy data <strong>will not be leaked</strong>.
+    </blockquote>
+
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>帮助 - 简体中文</title>
+    <style>
+        body {
+            font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
+            max-width: 760px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.8;
+            color: #333;
+        }
+        h1 { font-size: 24px; border-bottom: 2px solid #0078d4; padding-bottom: 8px; margin-bottom: 20px; }
+        h2 { font-size: 18px; margin-top: 32px; color: #0078d4; border-left: 4px solid #0078d4; padding-left: 10px; }
+        p, li { font-size: 15px; }
+        a { color: #0078d4; text-decoration: none; font-weight: bold; }
+        a:hover { text-decoration: underline; }
+        
+        /* 引用块样式，模仿 Markdown 的 > */
+        blockquote {
+            margin: 10px 0 20px 0;
+            padding: 12px 16px;
+            background: #f8f9fa;
+            border-left: 4px solid #0078d4;
+            border-radius: 0 4px 4px 0;
+            color: #444;
+        }
+        
+        /* Q 的样式 */
+        .q-text {
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 24px;
+            color: #222;
+        }
+        
+        /* 行内代码块样式 */
+        code {
+            background: #f2f2f2;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, "Courier New", monospace;
+            font-size: 14px;
+            color: #d14;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>帮助 - 简体中文</h1>
+
+    <h2>常见 Q/A</h2>
+
+    <!-- Q1 -->
+    <div class="q-text">Q: 这个项目有什么用？</div>
+    <blockquote>
+        <strong>A:</strong> 点名，详见 <a href="./README.md">项目 Readme.md</a>
+    </blockquote>
+
+    <!-- Q2 -->
+    <div class="q-text">Q: 我有一个 ".xlsx" 文件，如何转换为软件支持的 "txt" 文件？</div>
+    <blockquote>
+        <strong>A:</strong> 可以使用项目中的 <a href="./converter.html">xlsx转txt工具</a> 来进行转换，但我们目前<strong>不支持</strong> <em>".xls"（97-03工作表）</em> <strong>文件</strong>
+    </blockquote>
+
+    <!-- Q3 -->
+    <div class="q-text">Q: 为什么我们要使用 ".NET Framework 2.0"？</div>
+    <blockquote>
+        <strong>A:</strong> 为了<em>最极致的兼容性</em>。在中国，公司或学校可能以“经费不足”这一理由拒绝更换新款的高性能计算机（哪怕是珠海经济特区，也还有不少老旧的 Win7 机器），从而导致大部分城市的教学/办公用计算机还在使用 Windows 7 甚至是 Windows Vista 操作系统，而 .NET Framework 2.0（.NET 2.0）可以在 Windows XP 及以上的大部分计算机（除非你的电脑是第三方精简版）使用。
+    </blockquote>
+
+    <!-- Q4 -->
+    <div class="q-text">Q: 为什么我的名单无法导入？</div>
+    <blockquote>
+        <strong>A:</strong> 因为我们的程序仅支持 <strong>UTF-8 编码</strong>的字符，您可以尝试把<strong>大五码（Big5）</strong>、<strong>GBK（ANSI）编码</strong>的字符转换成 <strong>UTF-8 编码</strong>的字符。
+    </blockquote>
+
+    <!-- Q5 -->
+    <div class="q-text">Q: 导入的 txt 文件有什么格式要求吗？</div>
+    <blockquote>
+        <strong>A:</strong> 有要求，但非常简单，每行有且仅有一个名字即可。
+    </blockquote>
+
+    <!-- Q6 -->
+    <div class="q-text">Q: 我担心我的名单数据被上传或泄露，这个程序会泄露吗？</div>
+    <blockquote>
+        <strong>A:</strong> 我们的应用程序仅在<strong>本地</strong>运行，从未使用任何<strong>云服务</strong>，在您的电脑不遭受他人攻击的情况下，您的名单隐私数据<strong>不会泄露</strong>。
+    </blockquote>
+
+</body>
+</html>

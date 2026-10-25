@@ -13,6 +13,10 @@
 如发现兼容性问题、程序 bug 或严重崩溃等，欢迎发送反馈至 18926925069@163.com。
 如果您对新功能有想法，也可发送至同一邮箱。
 
+## 关于AI辅助制作
+
+> 本项目使用[DeepSeek Harness](https://www.deepseek.com/harness/)辅助制作
+
 # English
 
 ## Random Roll Call System
@@ -26,3 +30,7 @@ Developed for schools, it supports importing a name list from a .txt file or add
 ## Feedback & New Features
 
 If you find any bugs or compatibility issues, or if you have suggestions for new features, please contact us at 18926925069@163.com.
+
+## About AI-Assisted Production
+
+> This project is assisted by [DeepSeek Harness](https://www.deepseek.com/harness/) for production.
