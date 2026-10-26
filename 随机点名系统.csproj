@@ -53,12 +53,6 @@
     <Compile Include="Index.Designer.cs">
       <DependentUpon>Index.cs</DependentUpon>
     </Compile>
-    <Compile Include="Set.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Set.Designer.cs">
-      <DependentUpon>Set.cs</DependentUpon>
-    </Compile>
     <Compile Include="LineSplitter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -71,9 +65,6 @@
     <EmbeddedResource Include="obj\Debug\随机点名系统.AddName.resources" />
     <EmbeddedResource Include="obj\Debug\随机点名系统.Index.resources" />
     <EmbeddedResource Include="obj\Debug\随机点名系统.Set.resources" />
-    <EmbeddedResource Include="Set.resx">
-      <DependentUpon>Set.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Content Include=".gitattributes" />
