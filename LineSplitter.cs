@@ -1,4 +1,6 @@
+//version:v1.0
 using System;
+using System.Globalization;
 using System.IO;
 using System.Text;
 
@@ -224,6 +226,73 @@ namespace 随机点名系统
             }
 
             return names.ToArray();
+        }
+
+        /// <summary>
+        /// Reads one line of a name file as a name plus an optional weight ("张三 3", "张三<TAB>3" or "张三,3").
+        /// A line without a trailing number (or whose number is outside 0..<see cref="WeightStore.MaxWeight"/>, such as an
+        /// unreasonable count) is treated as a name with weight -1, meaning "no weight in the file".
+        /// Returns false for blank lines. The weight is never left inside the name, so the digits in "1234" on their own
+        /// line stay a name and do not become a weight.
+        /// </summary>
+        internal static bool ParseEntry(string line, out string name, out int weight)
+        {
+            name = null;
+            weight = -1;
+            if (line == null)
+            {
+                return false;
+            }
+
+            string trimmed = line.Trim();
+            if (trimmed.Length == 0)
+            {
+                return false;
+            }
+
+            // Only the last token can be the weight; the name may contain spaces of its own.
+            int split = trimmed.LastIndexOfAny(new char[] { ' ', '\t', ',', '，', '\u3000' });
+            if (split >= 0 && split < trimmed.Length - 1)
+            {
+                string last = trimmed.Substring(split + 1);
+                int parsed;
+                if (IsDigits(last) && int.TryParse(last, NumberStyles.Integer, CultureInfo.InvariantCulture, out parsed)
+                    && parsed >= 0 && parsed <= WeightStore.MaxWeight)
+                {
+                    string head = trimmed.Substring(0, split).TrimEnd();
+                    if (head.Length > 0)
+                    {
+                        name = head;
+                        weight = parsed;
+                        return true;
+                    }
+                }
+            }
+
+            name = trimmed;
+            return true;
+        }
+
+        /// <summary>
+        /// True when every character is an ASCII digit. int.TryParse alone would also accept a leading "+" or white space,
+        /// which must stay part of the name instead.
+        /// </summary>
+        private static bool IsDigits(string text)
+        {
+            if (text.Length == 0)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < text.Length; i++)
+            {
+                if (text[i] < '0' || text[i] > '9')
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         /// <summary>

@@ -1,3 +1,4 @@
+//version:v1.0
 namespace 随机点名系统
 {
     partial class AddName

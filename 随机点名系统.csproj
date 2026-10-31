@@ -55,6 +55,7 @@
     </Compile>
     <Compile Include="LineSplitter.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="WeightStore.cs" />
     <Compile Include="Settings.cs">
       <SubType>Form</SubType>
     </Compile>
