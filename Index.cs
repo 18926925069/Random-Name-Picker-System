@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Text;
@@ -36,6 +35,7 @@ namespace 随机点名系统
                 btnAdd.Text = "Add manually";
                 btnInput.Text = "Import '.txt'";
                 btnRandomName.Text = "Pick";
+                btnSettings.Text = "Settings";
             }
             else
             {
@@ -43,6 +43,7 @@ namespace 随机点名系统
                 btnAdd.Text = "手动添加";
                 btnInput.Text = "导入'.txt'文档";
                 btnRandomName.Text = "点名";
+                btnSettings.Text = "设置";
             }
         }
 
@@ -67,8 +68,9 @@ namespace 随机点名系统
         {
             string appDir = AppDomain.CurrentDomain.BaseDirectory;
             string lang = English ? "EN" : "ZH";
-            string defaultFile = Path.Combine(appDir, $"Name-{lang}.txt");
-            string HelpFile = Path.Combine(appDir, $"Help-{lang}.html");
+            // String concatenation instead of $"..." interpolation: the project targets .NET 2.0 and has to stay buildable
+            // with the C# version of that toolchain, where interpolated strings do not exist yet.
+            string defaultFile = Path.Combine(appDir, "Name-" + lang + ".txt");
 
             if (!File.Exists(defaultFile))
                 defaultFile = Path.Combine(appDir, "Name-ZH.txt");
@@ -196,32 +198,17 @@ namespace 随机点名系统
             listViewRandomName.Items.Add(randomName);
         }
 
-        private void btnSwitch_Click(object sender, EventArgs e)
+        private void btnSettings_Click(object sender, EventArgs e)
         {
-            English = false;
-            ApplyLanguage();
-        }
-
-        private void btnEnglish_Click(object sender, EventArgs e)
-        {
-            English = true;
-            ApplyLanguage();
-        }
-
-        private void btnHelp_Click(object sender, EventArgs e)
-        {
-            string appDir = AppDomain.CurrentDomain.BaseDirectory;
-
-            string lang = English ? "EN" : "ZH";
-            string helpFile = Path.Combine(appDir, "help-" + lang + ".html");
-
-            if (File.Exists(helpFile))
+            // The language switch and the help page both live in the Settings dialog now, so this window only needs one
+            // entry point. ShowDialog returns after the language has already been applied inside the dialog, so the main
+            // window refreshes its own texts unconditionally afterwards; that way closing with Cancel keeps the chosen
+            // language instead of contradicting what the user already sees.
+            using (Settings settingsForm = new Settings(English))
             {
-                Process.Start(helpFile);
-            }
-            else
-            {
-                MessageBox.Show("找不到帮助文件：" + helpFile, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                settingsForm.ShowDialog(this);
+                English = settingsForm.IsEnglish;
+                ApplyLanguage();
             }
         }
     }

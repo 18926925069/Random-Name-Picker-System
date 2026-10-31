@@ -55,6 +55,12 @@
     </Compile>
     <Compile Include="LineSplitter.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="Settings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Settings.Designer.cs">
+      <DependentUpon>Settings.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="AddName.resx">
       <DependentUpon>AddName.cs</DependentUpon>
@@ -62,9 +68,12 @@
     <EmbeddedResource Include="Index.resx">
       <DependentUpon>Index.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Settings.resx">
+      <DependentUpon>Settings.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="obj\Debug\随机点名系统.AddName.resources" />
     <EmbeddedResource Include="obj\Debug\随机点名系统.Index.resources" />
-    <EmbeddedResource Include="obj\Debug\随机点名系统.Set.resources" />
+    <EmbeddedResource Include="obj\Debug\随机点名系统.Settings.resources" />
   </ItemGroup>
   <ItemGroup>
     <Content Include=".gitattributes" />
